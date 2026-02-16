@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#2563EB">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>燃費比較シミュレーター</title>
+<style>
+:root {
+  --hev-color: #2563EB;
+  --hev-light: #DBEAFE;
+  --gas-color: #EA580C;
+  --gas-light: #FFF7ED;
+  --saving-color: #16A34A;
+  --saving-light: #DCFCE7;
+  --breakeven-color: #DC2626;
+  --bg-main: #F9FAFB;
+  --bg-card: #FFFFFF;
+  --text-primary: #111827;
+  --text-secondary: #6B7280;
+  --border-color: #E5E7EB;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", "Noto Sans JP", sans-serif;
+  background: var(--bg-main);
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+
+#app {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 10px 20px 12px;
+}
+
+/* ヘッダー */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 2px solid var(--border-color);
+}
+
+header h1 {
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.print-btn {
+  padding: 4px 16px;
+  background: var(--text-primary);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.print-btn:hover {
+  opacity: 0.85;
+}
+
+/* パラメータ入力エリア */
+.params-section {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 10px 16px;
+  margin-bottom: 10px;
+}
+
+.params-row {
+  display: grid;
+  gap: 12px 20px;
+}
+
+.params-row-2 {
+  grid-template-columns: 1fr 1fr;
+}
+
+.params-row-3 {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.param-group label {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+  white-space: nowrap;
+}
+
+.param-input-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.param-input-row input[type="range"] {
+  flex: 1;
+  min-width: 0;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--border-color);
+  border-radius: 2px;
+  outline: none;
+}
+
+.param-input-row input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--hev-color);
+  cursor: pointer;
+}
+
+.param-input-row input[type="number"] {
+  width: 95px;
+  padding: 3px 6px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-size: 0.8rem;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.param-input-row input[type="number"]:focus {
+  outline: 2px solid var(--hev-color);
+  border-color: transparent;
+}
+
+.param-unit {
+  font-size: 0.65rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+/* KPIカード */
+.kpi-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1.4fr;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.kpi-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 6px 12px;
+  text-align: center;
+  border-top: 3px solid transparent;
+}
+
+.kpi-card .kpi-label {
+  font-size: 0.65rem;
+  color: var(--text-secondary);
+  margin-bottom: 2px;
+  font-weight: 600;
+}
+
+.kpi-card .kpi-value {
+  font-size: 1.4rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+}
+
+.kpi-card .kpi-unit {
+  font-size: 0.65rem;
+  color: var(--text-secondary);
+  margin-top: 1px;
+}
+
+.kpi-hev { border-top-color: var(--hev-color); }
+.kpi-hev .kpi-value { color: var(--hev-color); }
+.kpi-gas { border-top-color: var(--gas-color); }
+.kpi-gas .kpi-value { color: var(--gas-color); }
+.kpi-saving { border-top-color: var(--saving-color); }
+.kpi-saving .kpi-value { color: var(--saving-color); }
+
+.kpi-breakeven {
+  border-top-color: var(--breakeven-color);
+  background: #FEF2F2;
+}
+.kpi-breakeven .kpi-value {
+  color: var(--breakeven-color);
+  font-size: 1.8rem;
+}
+
+/* グラフ2段横並び */
+.charts-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.chart-section {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 8px 12px;
+}
+
+.chart-section h2 {
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: var(--text-secondary);
+}
+
+.chart-container {
+  position: relative;
+  width: 100%;
+}
+
+/* テーブル */
+.table-section {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin-bottom: 6px;
+  overflow-x: auto;
+}
+
+.table-section h2 {
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: var(--text-secondary);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.72rem;
+}
+
+thead th {
+  background: #F3F4F6;
+  padding: 4px 8px;
+  text-align: right;
+  font-weight: 600;
+  font-size: 0.68rem;
+  color: var(--text-secondary);
+  border-bottom: 2px solid var(--border-color);
+  white-space: nowrap;
+}
+
+thead th:first-child {
+  text-align: center;
+}
+
+tbody td {
+  padding: 3px 8px;
+  text-align: right;
+  border-bottom: 1px solid var(--border-color);
+}
+
+tbody td:first-child {
+  text-align: center;
+  font-weight: 600;
+}
+
+tbody tr.row-breakeven {
+  background: #FEF9C3 !important;
+  font-weight: 700;
+}
+
+tbody tr.row-positive {
+  background: var(--saving-light);
+}
+
+/* フッター */
+footer {
+  text-align: center;
+  font-size: 0.65rem;
+  color: var(--text-secondary);
+  padding-top: 4px;
+}
+
+/* レスポンシブ: スマホ */
+@media (max-width: 767px) {
+  .params-row-2, .params-row-3 {
+    grid-template-columns: 1fr;
+  }
+
+  .charts-row {
+    grid-template-columns: 1fr;
+  }
+
+  .kpi-section {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* 印刷用 */
+@media print {
+  @page {
+    size: A4 landscape;
+    margin: 8mm;
+  }
+
+  body {
+    background: #fff;
+    font-size: 10px;
+  }
+
+  #app {
+    padding: 0;
+    max-width: none;
+  }
+
+  .print-btn {
+    display: none !important;
+  }
+
+  input[type="range"] {
+    display: none !important;
+  }
+
+  .param-input-row {
+    justify-content: flex-start;
+  }
+
+  .params-section, .kpi-card, .chart-section, .table-section {
+    border-color: #ccc;
+    box-shadow: none;
+  }
+
+  .kpi-breakeven {
+    background: #FEF2F2 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  tbody tr.row-breakeven {
+    background: #FEF9C3 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  tbody tr.row-positive {
+    background: var(--saving-light) !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .kpi-card {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+</style>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ヘッダー -->
+  <header>
+    <h1>燃費比較シミュレーター</h1>
+    <button class="print-btn" onclick="window.print()">印刷</button>
+  </header>
+
+  <!-- パラメータ入力エリア（2行: 2列+3列） -->
+  <div class="params-section">
+    <div class="params-row params-row-2">
+      <div class="param-group">
+        <label>ガソリン単価</label>
+        <div class="param-input-row">
+          <input type="range" id="gasPrice_range" min="100" max="250" step="1" value="170">
+          <input type="number" id="gasPrice_num" min="100" max="250" step="1" value="170">
+          <span class="param-unit">円/L</span>
+        </div>
+      </div>
+      <div class="param-group">
+        <label>年間走行距離</label>
+        <div class="param-input-row">
+          <input type="range" id="annualDistance_range" min="3000" max="30000" step="1000" value="10000">
+          <input type="number" id="annualDistance_num" min="3000" max="30000" step="1000" value="10000">
+          <span class="param-unit">km</span>
+        </div>
+      </div>
+    </div>
+    <div class="params-row params-row-3">
+      <div class="param-group">
+        <label>HEV車燃費</label>
+        <div class="param-input-row">
+          <input type="range" id="hevMpg_range" min="5.0" max="50.0" step="0.1" value="25.0">
+          <input type="number" id="hevMpg_num" min="5.0" max="50.0" step="0.1" value="25.0">
+          <span class="param-unit">km/L</span>
+        </div>
+      </div>
+      <div class="param-group">
+        <label>ガソリン車燃費</label>
+        <div class="param-input-row">
+          <input type="range" id="gasMpg_range" min="5.0" max="50.0" step="0.1" value="15.0">
+          <input type="number" id="gasMpg_num" min="5.0" max="50.0" step="0.1" value="15.0">
+          <span class="param-unit">km/L</span>
+        </div>
+      </div>
+      <div class="param-group">
+        <label>車両価格差（HEVが高い分）</label>
+        <div class="param-input-row">
+          <input type="range" id="priceDiff_range" min="0" max="2000000" step="10000" value="350000">
+          <input type="number" id="priceDiff_num" min="0" max="2000000" step="10000" value="350000">
+          <span class="param-unit">円</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KPIカード -->
+  <div class="kpi-section">
+    <div class="kpi-card kpi-hev">
+      <div class="kpi-label">年間HEV燃料代</div>
+      <div class="kpi-value" id="kpi-hev-cost">-</div>
+      <div class="kpi-unit">円</div>
+    </div>
+    <div class="kpi-card kpi-gas">
+      <div class="kpi-label">年間GAS燃料代</div>
+      <div class="kpi-value" id="kpi-gas-cost">-</div>
+      <div class="kpi-unit">円</div>
+    </div>
+    <div class="kpi-card kpi-saving">
+      <div class="kpi-label">年間節約額</div>
+      <div class="kpi-value" id="kpi-saving">-</div>
+      <div class="kpi-unit">円</div>
+    </div>
+    <div class="kpi-card kpi-breakeven">
+      <div class="kpi-label">損益分岐年数</div>
+      <div class="kpi-value" id="kpi-breakeven">-</div>
+      <div class="kpi-unit">年目</div>
+    </div>
+  </div>
+
+  <!-- グラフ（2つ横並び） -->
+  <div class="charts-row">
+    <div class="chart-section">
+      <h2>累計燃料代の推移</h2>
+      <div class="chart-container">
+        <canvas id="chart"></canvas>
+      </div>
+    </div>
+    <div class="chart-section">
+      <h2>車両価格差の回収状況</h2>
+      <div class="chart-container">
+        <canvas id="chart2"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- テーブル -->
+  <div class="table-section">
+    <h2>年次比較表</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>経過年数</th>
+          <th>累計走行距離</th>
+          <th>HEV燃料代</th>
+          <th>GAS燃料代</th>
+          <th>差額</th>
+          <th>車両代金差額残</th>
+        </tr>
+      </thead>
+      <tbody id="table-body"></tbody>
+    </table>
+  </div>
+
+  <!-- フッター -->
+  <footer>※入力された燃費に基づく試算です。実際の燃費は走行条件により異なります。</footer>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+(function() {
+  var params = [
+    { name: 'gasPrice', parse: parseInt },
+    { name: 'annualDistance', parse: parseInt },
+    { name: 'hevMpg', parse: parseFloat },
+    { name: 'gasMpg', parse: parseFloat },
+    { name: 'priceDiff', parse: parseInt }
+  ];
+
+  var els = {};
+  params.forEach(function(p) {
+    els[p.name] = {
+      range: document.getElementById(p.name + '_range'),
+      num: document.getElementById(p.name + '_num')
+    };
+  });
+
+  params.forEach(function(p) {
+    els[p.name].range.addEventListener('input', function() {
+      els[p.name].num.value = this.value;
+      update();
+    });
+    els[p.name].num.addEventListener('input', function() {
+      els[p.name].range.value = this.value;
+      update();
+    });
+  });
+
+  function getParams() {
+    var result = {};
+    params.forEach(function(p) {
+      result[p.name] = p.parse(els[p.name].num.value);
+    });
+    return result;
+  }
+
+  function formatNumber(n) {
+    return Math.round(n).toLocaleString('ja-JP');
+  }
+
+  function calculate(p) {
+    var data = [];
+    var breakEvenYear = null;
+    for (var n = 1; n <= 13; n++) {
+      var cumDistance = p.annualDistance * n;
+      var hevCumCost = cumDistance / p.hevMpg * p.gasPrice;
+      var gasCumCost = cumDistance / p.gasMpg * p.gasPrice;
+      var fuelDiff = gasCumCost - hevCumCost;
+      var priceDiffRem = p.priceDiff - fuelDiff;
+      data.push({
+        year: n, cumDistance: cumDistance,
+        hevCumCost: hevCumCost, gasCumCost: gasCumCost,
+        fuelDiff: fuelDiff, priceDiffRem: priceDiffRem
+      });
+      if (breakEvenYear === null && priceDiffRem <= 0) {
+        breakEvenYear = n;
+      }
+    }
+    var hevAnnualCost = p.annualDistance / p.hevMpg * p.gasPrice;
+    var gasAnnualCost = p.annualDistance / p.gasMpg * p.gasPrice;
+    return {
+      rows: data,
+      hevAnnualCost: hevAnnualCost,
+      gasAnnualCost: gasAnnualCost,
+      annualSaving: gasAnnualCost - hevAnnualCost,
+      breakEvenYear: breakEvenYear
+    };
+  }
+
+  function updateKPI(result) {
+    document.getElementById('kpi-hev-cost').textContent = formatNumber(result.hevAnnualCost);
+    document.getElementById('kpi-gas-cost').textContent = formatNumber(result.gasAnnualCost);
+    document.getElementById('kpi-saving').textContent = formatNumber(result.annualSaving);
+    var beEl = document.getElementById('kpi-breakeven');
+    if (result.breakEvenYear !== null) {
+      beEl.textContent = result.breakEvenYear;
+      beEl.nextElementSibling.textContent = '年目';
+    } else {
+      beEl.textContent = '13年以上';
+      beEl.nextElementSibling.textContent = '';
+    }
+  }
+
+  // 損益分岐年（プラグイン参照用）
+  var currentBreakEvenYear = null;
+
+  // Chart.js プラグイン: 損益分岐点の垂直線
+  var breakEvenLinePlugin = {
+    id: 'breakEvenLine',
+    afterDraw: function(ch) {
+      if (currentBreakEvenYear === null) return;
+      var xScale = ch.scales.x;
+      var yScale = ch.scales.y;
+      var x = xScale.getPixelForValue(currentBreakEvenYear - 1);
+      var c = ch.ctx;
+      c.save();
+      c.beginPath();
+      c.setLineDash([5, 3]);
+      c.strokeStyle = '#DC2626';
+      c.lineWidth = 1.5;
+      c.moveTo(x, yScale.top);
+      c.lineTo(x, yScale.bottom);
+      c.stroke();
+      c.fillStyle = '#DC2626';
+      c.font = 'bold 10px sans-serif';
+      c.textAlign = 'center';
+      c.fillText(currentBreakEvenYear + '年目', x, yScale.top - 4);
+      c.restore();
+    }
+  };
+
+  var chartOpts = {
+    responsive: true,
+    maintainAspectRatio: true,
+    aspectRatio: 2.2,
+    interaction: { mode: 'index', intersect: false },
+    plugins: {
+      legend: { labels: { font: { size: 10 } } },
+      tooltip: {
+        callbacks: {
+          label: function(ctx) {
+            return ctx.dataset.label + ': ' + Math.round(ctx.parsed.y).toLocaleString('ja-JP') + '円';
+          }
+        }
+      }
+    },
+    scales: {
+      x: {
+        ticks: { font: { size: 9 } },
+        title: { display: false }
+      },
+      y: {
+        ticks: {
+          font: { size: 9 },
+          callback: function(v) { return v.toLocaleString('ja-JP'); }
+        },
+        title: { display: false }
+      }
+    }
+  };
+
+  // Chart 1: 累計燃料代
+  var chart = new Chart(document.getElementById('chart'), {
+    type: 'line',
+    data: {
+      labels: [],
+      datasets: [
+        {
+          label: 'HEV',
+          data: [],
+          borderColor: '#2563EB',
+          backgroundColor: 'rgba(37,99,235,0.08)',
+          borderWidth: 2,
+          pointRadius: 3,
+          pointBackgroundColor: '#2563EB',
+          tension: 0.1
+        },
+        {
+          label: 'ガソリン車',
+          data: [],
+          borderColor: '#EA580C',
+          backgroundColor: 'rgba(234,88,12,0.08)',
+          borderWidth: 2,
+          pointRadius: 3,
+          pointBackgroundColor: '#EA580C',
+          tension: 0.1
+        }
+      ]
+    },
+    options: Object.assign({}, chartOpts, {
+      layout: { padding: { top: 14 } }
+    }),
+    plugins: [breakEvenLinePlugin]
+  });
+
+  // Chart 2: 車両代金差額残
+  var chart2 = new Chart(document.getElementById('chart2'), {
+    type: 'bar',
+    data: {
+      labels: [],
+      datasets: [{
+        label: '車両代金差額残',
+        data: [],
+        backgroundColor: [],
+        borderColor: [],
+        borderWidth: 1,
+        borderRadius: 3
+      }]
+    },
+    options: Object.assign({}, chartOpts, {
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function(ctx) {
+              return Math.round(ctx.parsed.y).toLocaleString('ja-JP') + '円';
+            }
+          }
+        }
+      }
+    })
+  });
+
+  function updateChart(result) {
+    // Chart 1: 累計燃料代
+    var labels = result.rows.map(function(r) { return r.year + '年'; });
+    chart.data.labels = labels;
+    chart.data.datasets[0].data = result.rows.map(function(r) { return Math.round(r.hevCumCost); });
+    chart.data.datasets[1].data = result.rows.map(function(r) { return Math.round(r.gasCumCost); });
+    currentBreakEvenYear = result.breakEvenYear;
+    chart.update();
+
+    var remData = result.rows.map(function(r) { return Math.round(r.priceDiffRem); });
+    chart2.data.labels = labels;
+    chart2.data.datasets[0].data = remData;
+    chart2.data.datasets[0].backgroundColor = remData.map(function(v) {
+      return v > 0 ? 'rgba(220,38,38,0.25)' : 'rgba(22,163,74,0.35)';
+    });
+    chart2.data.datasets[0].borderColor = remData.map(function(v) {
+      return v > 0 ? '#DC2626' : '#16A34A';
+    });
+    chart2.update();
+  }
+
+  function updateTable(result) {
+    var tbody = document.getElementById('table-body');
+    var html = '';
+    result.rows.forEach(function(r) {
+      var cls = '';
+      if (result.breakEvenYear !== null && r.year === result.breakEvenYear) {
+        cls = 'row-breakeven';
+      } else if (r.priceDiffRem < 0) {
+        cls = 'row-positive';
+      }
+      html += '<tr class="' + cls + '">'
+        + '<td>' + r.year + '年</td>'
+        + '<td>' + formatNumber(r.cumDistance) + ' km</td>'
+        + '<td>' + formatNumber(r.hevCumCost) + ' 円</td>'
+        + '<td>' + formatNumber(r.gasCumCost) + ' 円</td>'
+        + '<td>' + formatNumber(r.fuelDiff) + ' 円</td>'
+        + '<td>' + formatNumber(r.priceDiffRem) + ' 円</td>'
+        + '</tr>';
+    });
+    tbody.innerHTML = html;
+  }
+
+  function update() {
+    var p = getParams();
+    var result = calculate(p);
+    updateKPI(result);
+    updateChart(result);
+    updateTable(result);
+  }
+
+  update();
+})();
+
+// Service Worker登録（ホスティング時のみ有効、ローカルファイルでは無視）
+if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+  navigator.serviceWorker.register('./sw.js');
+}
+</script>
+
+</body>
+</html>
