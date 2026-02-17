@@ -10,474 +10,624 @@
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
 <title>燃費比較</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-:root {
-  --hev-color: #2563EB;
-  --hev-light: #DBEAFE;
-  --gas-color: #EA580C;
-  --gas-light: #FFF7ED;
-  --saving-color: #16A34A;
-  --saving-light: #DCFCE7;
-  --breakeven-color: #DC2626;
-  --bg-main: #F9FAFB;
-  --bg-card: #FFFFFF;
-  --text-primary: #111827;
-  --text-secondary: #6B7280;
-  --border-color: #E5E7EB;
-}
+  :root {
+    --ink: #1a1a1a;
+    --ink-light: #3d3d3d;
+    --ink-muted: #6e6e6e;
+    --paper: #f5f3ee;
+    --paper-warm: #ece8df;
+    --card: #ffffff;
+    --border: #d0cabe;
+    --border-light: #e4dfd5;
 
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+    /* メリハリのある色 — 彩度を上げつつ品のあるトーン */
+    --hev-primary: #1a6b8a;
+    --hev-dark: #0e4f6a;
+    --hev-bg: #ddeef6;
+    --hev-accent: #2490bb;
 
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", "Noto Sans JP", sans-serif;
-  background: var(--bg-main);
-  color: var(--text-primary);
-  line-height: 1.4;
-}
+    --gas-primary: #b35c1e;
+    --gas-dark: #8a4510;
+    --gas-bg: #f8e8d6;
+    --gas-accent: #d4712e;
 
-#app {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 10px 20px 12px;
-}
+    --save-primary: #1a7a4a;
+    --save-dark: #0f5c35;
+    --save-bg: #d6f0e2;
 
-/* ヘッダー */
-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-  padding-bottom: 6px;
-  border-bottom: 2px solid var(--border-color);
-}
+    --warn-primary: #b83a2a;
+    --warn-dark: #8c2518;
+    --warn-bg: #fce4df;
 
-header h1 {
-  font-size: 1.2rem;
-  font-weight: 700;
-}
-
-.print-btn {
-  padding: 4px 16px;
-  background: var(--text-primary);
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  font-size: 0.8rem;
-  cursor: pointer;
-}
-
-.print-btn:hover {
-  opacity: 0.85;
-}
-
-/* パラメータ入力エリア */
-.params-section {
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  padding: 10px 16px;
-  margin-bottom: 10px;
-}
-
-.params-row {
-  display: grid;
-  gap: 12px 20px;
-}
-
-.params-row-2 {
-  grid-template-columns: 1fr 1fr;
-}
-
-.params-row-3 {
-  grid-template-columns: 1fr 1fr 1fr;
-}
-
-.param-group label {
-  display: block;
-  font-size: 0.7rem;
-  font-weight: 600;
-  color: var(--text-secondary);
-  margin-bottom: 4px;
-  white-space: nowrap;
-}
-
-.param-input-row {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.param-input-row input[type="range"] {
-  flex: 1;
-  min-width: 0;
-  height: 4px;
-  -webkit-appearance: none;
-  appearance: none;
-  background: var(--border-color);
-  border-radius: 2px;
-  outline: none;
-}
-
-.param-input-row input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: var(--hev-color);
-  cursor: pointer;
-}
-
-.param-input-row input[type="number"] {
-  width: 95px;
-  padding: 3px 6px;
-  border: 1px solid var(--border-color);
-  border-radius: 4px;
-  font-size: 0.8rem;
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-}
-
-.param-input-row input[type="number"]:focus {
-  outline: 2px solid var(--hev-color);
-  border-color: transparent;
-}
-
-.param-unit {
-  font-size: 0.65rem;
-  color: var(--text-secondary);
-  white-space: nowrap;
-}
-
-/* KPIカード */
-.kpi-section {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1.4fr;
-  gap: 10px;
-  margin-bottom: 10px;
-}
-
-.kpi-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  padding: 6px 12px;
-  text-align: center;
-  border-top: 3px solid transparent;
-}
-
-.kpi-card .kpi-label {
-  font-size: 0.65rem;
-  color: var(--text-secondary);
-  margin-bottom: 2px;
-  font-weight: 600;
-}
-
-.kpi-card .kpi-value {
-  font-size: 1.4rem;
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-  line-height: 1.2;
-}
-
-.kpi-card .kpi-unit {
-  font-size: 0.65rem;
-  color: var(--text-secondary);
-  margin-top: 1px;
-}
-
-.kpi-hev { border-top-color: var(--hev-color); }
-.kpi-hev .kpi-value { color: var(--hev-color); }
-.kpi-gas { border-top-color: var(--gas-color); }
-.kpi-gas .kpi-value { color: var(--gas-color); }
-.kpi-saving { border-top-color: var(--saving-color); }
-.kpi-saving .kpi-value { color: var(--saving-color); }
-
-.kpi-breakeven {
-  border-top-color: var(--breakeven-color);
-  background: #FEF2F2;
-}
-.kpi-breakeven .kpi-value {
-  color: var(--breakeven-color);
-  font-size: 1.8rem;
-}
-
-/* グラフ2段横並び */
-.charts-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-bottom: 10px;
-}
-
-.chart-section {
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  padding: 8px 12px;
-}
-
-.chart-section h2 {
-  font-size: 0.75rem;
-  font-weight: 600;
-  margin-bottom: 4px;
-  color: var(--text-secondary);
-}
-
-.chart-container {
-  position: relative;
-  width: 100%;
-}
-
-/* テーブル */
-.table-section {
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  padding: 8px 12px;
-  margin-bottom: 6px;
-  overflow-x: auto;
-}
-
-.table-section h2 {
-  font-size: 0.75rem;
-  font-weight: 600;
-  margin-bottom: 4px;
-  color: var(--text-secondary);
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-variant-numeric: tabular-nums;
-  font-size: 0.72rem;
-}
-
-thead th {
-  background: #F3F4F6;
-  padding: 4px 8px;
-  text-align: right;
-  font-weight: 600;
-  font-size: 0.68rem;
-  color: var(--text-secondary);
-  border-bottom: 2px solid var(--border-color);
-  white-space: nowrap;
-}
-
-thead th:first-child {
-  text-align: center;
-}
-
-tbody td {
-  padding: 3px 8px;
-  text-align: right;
-  border-bottom: 1px solid var(--border-color);
-}
-
-tbody td:first-child {
-  text-align: center;
-  font-weight: 600;
-}
-
-tbody tr.row-breakeven {
-  background: #FEF9C3 !important;
-  font-weight: 700;
-}
-
-tbody tr.row-positive {
-  background: var(--saving-light);
-}
-
-/* フッター */
-footer {
-  text-align: center;
-  font-size: 0.65rem;
-  color: var(--text-secondary);
-  padding-top: 4px;
-}
-
-/* レスポンシブ: スマホ */
-@media (max-width: 767px) {
-  .params-row-2, .params-row-3 {
-    grid-template-columns: 1fr;
+    --radius: 6px;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+    --shadow-md: 0 3px 12px rgba(0,0,0,0.08);
   }
 
-  .charts-row {
-    grid-template-columns: 1fr;
-  }
-
-  .kpi-section {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-/* 印刷用 */
-@media print {
-  @page {
-    size: A4 landscape;
-    margin: 8mm;
-  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
-    background: #fff;
-    font-size: 10px;
+    font-family: 'Zen Kaku Gothic New', 'Noto Sans JP', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
   }
 
-  #app {
-    padding: 0;
-    max-width: none;
+  .container {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  .header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 36px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid var(--ink);
+  }
+
+  .header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+
+  .header .subtitle {
+    font-size: 12px;
+    color: var(--ink-muted);
+    font-weight: 400;
+    margin-left: 12px;
   }
 
   .print-btn {
-    display: none !important;
+    font-family: inherit;
+    font-size: 12px;
+    padding: 6px 16px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--ink-light);
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .print-btn:hover { background: var(--paper-warm); border-color: var(--ink-muted); }
+
+  /* 入力セクション */
+  .input-section {
+    background: var(--card);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow-sm);
   }
 
-  input[type="range"] {
-    display: none !important;
+  .input-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 22px 48px;
   }
 
-  .param-input-row {
-    justify-content: flex-start;
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
   }
 
-  .params-section, .kpi-card, .chart-section, .table-section {
-    border-color: #ccc;
-    box-shadow: none;
+  .input-group label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink-muted);
+    letter-spacing: 0.03em;
   }
 
-  .kpi-breakeven {
-    background: #FEF2F2 !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
+  .input-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
   }
 
-  tbody tr.row-breakeven {
-    background: #FEF9C3 !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
+  .input-row input[type="range"] {
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 6px;
+    background: #c0d8e8;
+    border-radius: 3px;
+    outline: none;
   }
 
-  tbody tr.row-positive {
-    background: var(--saving-light) !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
+  .input-row input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    background: #3b82c4;
+    border: 3px solid #fff;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.1s;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.18);
+  }
+  .input-row input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    background: #2d6fa8;
   }
 
-  .kpi-card {
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
+  .input-row input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: #3b82c4;
+    border: 3px solid #fff;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.18);
   }
-}
+
+  .input-row .value-box {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  .input-row .value-input {
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    width: 80px;
+    padding: 5px 8px;
+    text-align: right;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: var(--card);
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .input-row .value-input:focus {
+    border-color: #3b82c4;
+    box-shadow: 0 0 0 2px rgba(59,130,196,0.15);
+  }
+
+  .input-row .unit {
+    font-size: 12px;
+    color: var(--ink-muted);
+    min-width: 28px;
+    white-space: nowrap;
+  }
+
+  /* サマリーカード — 数値を大きく、色を強く */
+  .summary-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+
+  .summary-card {
+    padding: 18px 16px 16px;
+    border-radius: var(--radius);
+    border-left: 4px solid;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .summary-card .label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+  }
+
+  .summary-card .value {
+    font-size: 32px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.15;
+  }
+
+  .summary-card .value-unit {
+    font-size: 12px;
+    font-weight: 400;
+    margin-top: 2px;
+  }
+
+  .card-hev {
+    background: var(--hev-bg);
+    border-color: var(--hev-primary);
+  }
+  .card-hev .label { color: var(--hev-dark); }
+  .card-hev .value { color: var(--hev-primary); }
+  .card-hev .value-unit { color: var(--hev-dark); opacity: 0.6; }
+
+  .card-gas {
+    background: var(--gas-bg);
+    border-color: var(--gas-primary);
+  }
+  .card-gas .label { color: var(--gas-dark); }
+  .card-gas .value { color: var(--gas-primary); }
+  .card-gas .value-unit { color: var(--gas-dark); opacity: 0.6; }
+
+  .card-save {
+    background: var(--save-bg);
+    border-color: var(--save-primary);
+  }
+  .card-save .label { color: var(--save-dark); }
+  .card-save .value { color: var(--save-primary); }
+  .card-save .value-unit { color: var(--save-dark); opacity: 0.6; }
+
+  .card-breakeven {
+    background: var(--warn-bg);
+    border-color: var(--warn-primary);
+  }
+  .card-breakeven .label { color: var(--warn-dark); }
+  .card-breakeven .value { color: var(--warn-primary); }
+  .card-breakeven .value-unit { color: var(--warn-dark); opacity: 0.6; }
+
+  /* チャートエリア */
+  .charts-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  .chart-card {
+    background: var(--card);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius);
+    padding: 22px 24px;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .chart-card h3 {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  .chart-legend {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 10px;
+    font-size: 11px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--ink-light);
+    font-weight: 500;
+  }
+
+  .legend-line {
+    width: 16px;
+    height: 3px;
+    border-radius: 2px;
+  }
+
+  canvas {
+    width: 100% !important;
+    height: 250px !important;
+  }
+
+  /* テーブル */
+  .table-section {
+    background: var(--card);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .table-section h3 {
+    font-size: 13px;
+    font-weight: 600;
+    padding: 18px 24px 12px;
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  thead th {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ink-muted);
+    text-align: right;
+    padding: 10px 16px;
+    border-bottom: 2px solid var(--border);
+    letter-spacing: 0.03em;
+    background: var(--paper);
+  }
+
+  thead th:first-child { text-align: center; }
+
+  tbody td {
+    padding: 9px 16px;
+    text-align: right;
+    border-bottom: 1px solid var(--border-light);
+    color: var(--ink-light);
+  }
+
+  tbody td:first-child {
+    text-align: center;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  /* HEV列とGAS列に色味を付ける */
+  tbody td:nth-child(3) { color: var(--hev-primary); }
+  tbody td:nth-child(4) { color: var(--gas-primary); }
+  tbody td:nth-child(5) { color: var(--save-primary); font-weight: 500; }
+
+  tbody tr:hover {
+    background: rgba(0,0,0,0.02);
+  }
+
+  tbody tr.breakeven-row {
+    background: var(--warn-bg);
+    font-weight: 700;
+  }
+  tbody tr.breakeven-row td {
+    color: var(--warn-primary);
+    border-bottom-color: rgba(184,58,42,0.15);
+  }
+  tbody tr.breakeven-row td:nth-child(3) { color: var(--warn-primary); }
+  tbody tr.breakeven-row td:nth-child(4) { color: var(--warn-primary); }
+  tbody tr.breakeven-row td:nth-child(5) { color: var(--warn-primary); }
+
+  .negative { color: var(--warn-primary) !important; font-weight: 600; }
+  .positive { color: var(--save-primary) !important; }
+
+  .footnote {
+    margin-top: 24px;
+    font-size: 11px;
+    color: var(--ink-muted);
+    line-height: 1.8;
+    padding: 0 4px;
+  }
+
+  @media print {
+    @page {
+      size: A4 landscape;
+      margin: 6mm;
+    }
+
+    body {
+      background: white;
+      font-size: 10px;
+      line-height: 1.3;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    .container {
+      max-width: none;
+      padding: 0;
+    }
+
+    .print-btn { display: none !important; }
+    .input-row input[type="range"] { display: none !important; }
+
+    /* ヘッダー */
+    .header {
+      margin-bottom: 8px;
+      padding-bottom: 4px;
+    }
+    .header h1 { font-size: 16px; }
+    .header .subtitle { font-size: 10px; }
+
+    /* 入力セクション */
+    .input-section {
+      padding: 8px 12px;
+      margin-bottom: 6px;
+      box-shadow: none;
+      border-color: #ccc;
+    }
+    .input-grid { gap: 4px 24px; }
+    .input-group label { font-size: 9px; margin-bottom: 1px; }
+    .input-row { gap: 4px; }
+    .input-row .value-input { font-size: 11px; padding: 2px 4px; width: 70px; }
+    .input-row .unit { font-size: 9px; }
+
+    /* サマリーカード */
+    .summary-row { gap: 6px; margin-bottom: 6px; }
+    .summary-card {
+      padding: 6px 8px 5px;
+      border-left-width: 3px;
+    }
+    .summary-card .label { font-size: 8px; margin-bottom: 1px; }
+    .summary-card .value { font-size: 20px; }
+    .summary-card .value-unit { font-size: 9px; margin-top: 0; }
+
+    /* チャート */
+    .charts-row { gap: 6px; margin-bottom: 6px; }
+    .chart-card {
+      padding: 6px 8px;
+      box-shadow: none;
+      border-color: #ccc;
+    }
+    .chart-card h3 {
+      font-size: 10px;
+      margin-bottom: 4px;
+      padding-bottom: 3px;
+    }
+    .chart-legend { margin-bottom: 4px; font-size: 9px; }
+    canvas {
+      height: 150px !important;
+    }
+
+    /* テーブル */
+    .table-section {
+      box-shadow: none;
+      border-color: #ccc;
+    }
+    .table-section h3 {
+      font-size: 10px;
+      padding: 5px 8px 4px;
+    }
+    table { font-size: 9px; }
+    thead th {
+      font-size: 8px;
+      padding: 3px 6px;
+    }
+    tbody td {
+      padding: 2px 6px;
+    }
+    tbody tr.breakeven-row {
+      background: var(--warn-bg) !important;
+    }
+
+    /* 注釈 */
+    .footnote {
+      margin-top: 6px;
+      font-size: 8px;
+      line-height: 1.4;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .container { padding: 20px 16px; }
+    .input-grid { grid-template-columns: 1fr; gap: 16px; }
+    .summary-row { grid-template-columns: 1fr 1fr; }
+    .charts-row { grid-template-columns: 1fr; }
+    .summary-card .value { font-size: 26px; }
+  }
 </style>
 </head>
 <body>
+<div class="container">
 
-<div id="app">
-
-  <!-- ヘッダー -->
-  <header>
-    <h1>燃費比較シミュレーター</h1>
+  <div class="header">
+    <div>
+      <h1>燃費比較</h1>
+      <span class="subtitle">HEV vs ガソリン車　年間コスト比較</span>
+    </div>
     <button class="print-btn" onclick="window.print()">印刷</button>
-  </header>
+  </div>
 
-  <!-- パラメータ入力エリア（2行: 2列+3列） -->
-  <div class="params-section">
-    <div class="params-row params-row-2">
-      <div class="param-group">
+  <div class="input-section">
+    <div class="input-grid">
+      <div class="input-group">
         <label>ガソリン単価</label>
-        <div class="param-input-row">
-          <input type="range" id="gasPrice_range" min="100" max="250" step="1" value="170">
-          <input type="number" id="gasPrice_num" min="100" max="250" step="1" value="170">
-          <span class="param-unit">円/L</span>
+        <div class="input-row">
+          <input type="range" id="gasPrice" min="120" max="250" value="170" step="1">
+          <div class="value-box">
+            <input type="text" class="value-input" id="gasPriceVal" value="170">
+            <span class="unit">円/L</span>
+          </div>
         </div>
       </div>
-      <div class="param-group">
+      <div class="input-group">
         <label>年間走行距離</label>
-        <div class="param-input-row">
-          <input type="range" id="annualDistance_range" min="3000" max="30000" step="1000" value="10000">
-          <input type="number" id="annualDistance_num" min="3000" max="30000" step="1000" value="10000">
-          <span class="param-unit">km</span>
+        <div class="input-row">
+          <input type="range" id="annualKm" min="3000" max="30000" value="10000" step="1000">
+          <div class="value-box">
+            <input type="text" class="value-input" id="annualKmVal" value="10,000">
+            <span class="unit">km</span>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="params-row params-row-3">
-      <div class="param-group">
+      <div class="input-group">
         <label>HEV車燃費</label>
-        <div class="param-input-row">
-          <input type="range" id="hevMpg_range" min="5.0" max="50.0" step="0.1" value="25.0">
-          <input type="number" id="hevMpg_num" min="5.0" max="50.0" step="0.1" value="25.0">
-          <span class="param-unit">km/L</span>
+        <div class="input-row">
+          <input type="range" id="hevFuel" min="15" max="40" value="25" step="0.5">
+          <div class="value-box">
+            <input type="text" class="value-input" id="hevFuelVal" value="25.0">
+            <span class="unit">km/L</span>
+          </div>
         </div>
       </div>
-      <div class="param-group">
+      <div class="input-group">
         <label>ガソリン車燃費</label>
-        <div class="param-input-row">
-          <input type="range" id="gasMpg_range" min="5.0" max="50.0" step="0.1" value="15.0">
-          <input type="number" id="gasMpg_num" min="5.0" max="50.0" step="0.1" value="15.0">
-          <span class="param-unit">km/L</span>
+        <div class="input-row">
+          <input type="range" id="gasFuel" min="8" max="25" value="15" step="0.5">
+          <div class="value-box">
+            <input type="text" class="value-input" id="gasFuelVal" value="15.0">
+            <span class="unit">km/L</span>
+          </div>
         </div>
       </div>
-      <div class="param-group">
+      <div class="input-group" style="grid-column: 1 / -1;">
         <label>車両価格差（HEVが高い分）</label>
-        <div class="param-input-row">
-          <input type="range" id="priceDiff_range" min="0" max="2000000" step="10000" value="350000">
-          <input type="number" id="priceDiff_num" min="0" max="2000000" step="10000" value="350000">
-          <span class="param-unit">円</span>
+        <div class="input-row">
+          <input type="range" id="priceDiff" min="100000" max="800000" value="350000" step="10000">
+          <div class="value-box">
+            <input type="text" class="value-input" id="priceDiffVal" value="350,000">
+            <span class="unit">円</span>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- KPIカード -->
-  <div class="kpi-section">
-    <div class="kpi-card kpi-hev">
-      <div class="kpi-label">年間HEV燃料代</div>
-      <div class="kpi-value" id="kpi-hev-cost">-</div>
-      <div class="kpi-unit">円</div>
+  <div class="summary-row">
+    <div class="summary-card card-hev">
+      <div class="label">年間HEV燃料代</div>
+      <div class="value" id="annualHev">68,000</div>
+      <div class="value-unit">円</div>
     </div>
-    <div class="kpi-card kpi-gas">
-      <div class="kpi-label">年間GAS燃料代</div>
-      <div class="kpi-value" id="kpi-gas-cost">-</div>
-      <div class="kpi-unit">円</div>
+    <div class="summary-card card-gas">
+      <div class="label">年間GAS燃料代</div>
+      <div class="value" id="annualGas">113,333</div>
+      <div class="value-unit">円</div>
     </div>
-    <div class="kpi-card kpi-saving">
-      <div class="kpi-label">年間節約額</div>
-      <div class="kpi-value" id="kpi-saving">-</div>
-      <div class="kpi-unit">円</div>
+    <div class="summary-card card-save">
+      <div class="label">年間節約額</div>
+      <div class="value" id="annualSave">45,333</div>
+      <div class="value-unit">円</div>
     </div>
-    <div class="kpi-card kpi-breakeven">
-      <div class="kpi-label">損益分岐年数</div>
-      <div class="kpi-value" id="kpi-breakeven">-</div>
-      <div class="kpi-unit">年目</div>
+    <div class="summary-card card-breakeven">
+      <div class="label">損益分岐年数</div>
+      <div class="value" id="breakevenYear">8</div>
+      <div class="value-unit">年目</div>
     </div>
   </div>
 
-  <!-- グラフ（2つ横並び） -->
   <div class="charts-row">
-    <div class="chart-section">
-      <h2>累計燃料代の推移</h2>
-      <div class="chart-container">
-        <canvas id="chart"></canvas>
+    <div class="chart-card">
+      <h3>累計燃料代の推移</h3>
+      <div class="chart-legend">
+        <div class="legend-item">
+          <div class="legend-line" style="background: var(--hev-primary);"></div>
+          HEV
+        </div>
+        <div class="legend-item">
+          <div class="legend-line" style="background: var(--gas-primary);"></div>
+          ガソリン車
+        </div>
       </div>
+      <canvas id="lineChart"></canvas>
     </div>
-    <div class="chart-section">
-      <h2>車両価格差の回収状況</h2>
-      <div class="chart-container">
-        <canvas id="chart2"></canvas>
-      </div>
+    <div class="chart-card">
+      <h3>車両価格差の回収状況</h3>
+      <canvas id="barChart"></canvas>
     </div>
   </div>
 
-  <!-- テーブル -->
   <div class="table-section">
-    <h2>年次比較表</h2>
+    <h3>年次比較表</h3>
     <table>
       <thead>
         <tr>
-          <th>経過年数</th>
+          <th>年数</th>
           <th>累計走行距離</th>
           <th>HEV燃料代</th>
           <th>GAS燃料代</th>
@@ -485,279 +635,346 @@ footer {
           <th>車両代金差額残</th>
         </tr>
       </thead>
-      <tbody id="table-body"></tbody>
+      <tbody id="tableBody"></tbody>
     </table>
   </div>
 
-  <!-- フッター -->
-  <footer>※入力された燃費に基づく試算です。実際の燃費は走行条件により異なります。</footer>
+  <div class="footnote">
+    ※ 本シミュレーションは燃料代のみの比較です。車検・保険・メンテナンス費用は含まれていません。<br>
+    ※ 実際の燃費は走行条件により異なります。
+  </div>
 
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script>
-(function() {
-  var params = [
-    { name: 'gasPrice', parse: parseInt },
-    { name: 'annualDistance', parse: parseInt },
-    { name: 'hevMpg', parse: parseFloat },
-    { name: 'gasMpg', parse: parseFloat },
-    { name: 'priceDiff', parse: parseInt }
-  ];
+const $ = id => document.getElementById(id);
+const fmt = n => n.toLocaleString('ja-JP');
 
-  var els = {};
-  params.forEach(function(p) {
-    els[p.name] = {
-      range: document.getElementById(p.name + '_range'),
-      num: document.getElementById(p.name + '_num')
-    };
+const inputs = {
+  gasPrice: $('gasPrice'),
+  annualKm: $('annualKm'),
+  hevFuel: $('hevFuel'),
+  gasFuel: $('gasFuel'),
+  priceDiff: $('priceDiff'),
+};
+
+function getValues() {
+  return {
+    gasPrice: Number(inputs.gasPrice.value),
+    annualKm: Number(inputs.annualKm.value),
+    hevFuel: Number(inputs.hevFuel.value),
+    gasFuel: Number(inputs.gasFuel.value),
+    priceDiff: Number(inputs.priceDiff.value),
+  };
+}
+
+function calculate() {
+  const v = getValues();
+
+  // inputボックスの値を更新（フォーカス中は上書きしない）
+  const active = document.activeElement;
+  if (active !== $('gasPriceVal')) $('gasPriceVal').value = fmt(v.gasPrice);
+  if (active !== $('annualKmVal')) $('annualKmVal').value = fmt(v.annualKm);
+  if (active !== $('hevFuelVal')) $('hevFuelVal').value = v.hevFuel.toFixed(1);
+  if (active !== $('gasFuelVal')) $('gasFuelVal').value = v.gasFuel.toFixed(1);
+  if (active !== $('priceDiffVal')) $('priceDiffVal').value = fmt(v.priceDiff);
+
+  const annualHev = Math.round((v.annualKm / v.hevFuel) * v.gasPrice);
+  const annualGas = Math.round((v.annualKm / v.gasFuel) * v.gasPrice);
+  const annualSave = annualGas - annualHev;
+  const breakevenYear = annualSave > 0 ? Math.ceil(v.priceDiff / annualSave) : 99;
+
+  $('annualHev').textContent = fmt(annualHev);
+  $('annualGas').textContent = fmt(annualGas);
+  $('annualSave').textContent = fmt(annualSave);
+  $('breakevenYear').textContent = breakevenYear > 13 ? '13+' : breakevenYear;
+
+  const tbody = $('tableBody');
+  tbody.innerHTML = '';
+  const years = [];
+  for (let y = 1; y <= 13; y++) {
+    const cumKm = v.annualKm * y;
+    const cumHev = annualHev * y;
+    const cumGas = annualGas * y;
+    const diff = cumGas - cumHev;
+    const remaining = v.priceDiff - diff;
+    const isBreakeven = y === breakevenYear;
+
+    years.push({ y, cumKm, cumHev, cumGas, diff, remaining });
+
+    const tr = document.createElement('tr');
+    if (isBreakeven) tr.className = 'breakeven-row';
+    tr.innerHTML = `
+      <td>${y}年</td>
+      <td>${fmt(cumKm)} km</td>
+      <td>${fmt(cumHev)} 円</td>
+      <td>${fmt(cumGas)} 円</td>
+      <td>${fmt(diff)} 円</td>
+      <td class="${remaining < 0 ? 'negative' : 'positive'}">${fmt(remaining)} 円</td>
+    `;
+    tbody.appendChild(tr);
+  }
+
+  drawCharts(years, breakevenYear);
+}
+
+function drawLineChart(years, breakevenYear) {
+  const canvas = $('lineChart');
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.parentElement.getBoundingClientRect();
+  const w = rect.width - 48;
+  const h = canvas.offsetHeight || 250;
+  canvas.width = w * dpr;
+  canvas.height = h * dpr;
+  canvas.style.width = w + 'px';
+  canvas.style.height = h + 'px';
+  ctx.scale(dpr, dpr);
+  ctx.clearRect(0, 0, w, h);
+
+  const pad = { top: 24, right: 16, bottom: 32, left: 65 };
+  const cw = w - pad.left - pad.right;
+  const ch = h - pad.top - pad.bottom;
+
+  const maxVal = Math.max(...years.map(y => Math.max(y.cumHev, y.cumGas)));
+  const niceMax = Math.ceil(maxVal / 200000) * 200000;
+
+  // Grid
+  ctx.strokeStyle = '#e4dfd5';
+  ctx.lineWidth = 0.5;
+  for (let i = 0; i <= 4; i++) {
+    const yPos = pad.top + (ch / 4) * i;
+    ctx.beginPath();
+    ctx.moveTo(pad.left, yPos);
+    ctx.lineTo(pad.left + cw, yPos);
+    ctx.stroke();
+    ctx.fillStyle = '#999';
+    ctx.font = '10px "Zen Kaku Gothic New"';
+    ctx.textAlign = 'right';
+    ctx.fillText(fmt(niceMax - (niceMax / 4) * i), pad.left - 8, yPos + 3);
+  }
+
+  // X labels
+  ctx.textAlign = 'center';
+  years.forEach((yr, i) => {
+    const x = pad.left + (i / (years.length - 1)) * cw;
+    ctx.fillStyle = '#888';
+    ctx.font = '10px "Zen Kaku Gothic New"';
+    ctx.fillText(yr.y + '年', x, h - 8);
   });
 
-  params.forEach(function(p) {
-    els[p.name].range.addEventListener('input', function() {
-      els[p.name].num.value = this.value;
-      update();
-    });
-    els[p.name].num.addEventListener('input', function() {
-      els[p.name].range.value = this.value;
-      update();
-    });
-  });
+  // Breakeven dashed line
+  if (breakevenYear <= 13) {
+    const bx = pad.left + ((breakevenYear - 1) / (years.length - 1)) * cw;
+    ctx.strokeStyle = '#b83a2a';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([5, 4]);
+    ctx.beginPath();
+    ctx.moveTo(bx, pad.top);
+    ctx.lineTo(bx, pad.top + ch);
+    ctx.stroke();
+    ctx.setLineDash([]);
 
-  function getParams() {
-    var result = {};
-    params.forEach(function(p) {
-      result[p.name] = p.parse(els[p.name].num.value);
-    });
-    return result;
+    // Label with background
+    const label = breakevenYear + '年目';
+    ctx.font = '600 10px "Zen Kaku Gothic New"';
+    const tw = ctx.measureText(label).width;
+    ctx.fillStyle = '#b83a2a';
+    ctx.globalAlpha = 0.12;
+    ctx.fillRect(bx - tw/2 - 4, pad.top - 16, tw + 8, 14);
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = '#b83a2a';
+    ctx.fillText(label, bx, pad.top - 6);
   }
 
-  function formatNumber(n) {
-    return Math.round(n).toLocaleString('ja-JP');
+  // Area fills (subtle)
+  function drawArea(data, color, alpha) {
+    ctx.fillStyle = color;
+    ctx.globalAlpha = alpha;
+    ctx.beginPath();
+    data.forEach((val, i) => {
+      const x = pad.left + (i / (data.length - 1)) * cw;
+      const y = pad.top + ch - (val / niceMax) * ch;
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    });
+    ctx.lineTo(pad.left + cw, pad.top + ch);
+    ctx.lineTo(pad.left, pad.top + ch);
+    ctx.closePath();
+    ctx.fill();
+    ctx.globalAlpha = 1;
   }
 
-  function calculate(p) {
-    var data = [];
-    var breakEvenYear = null;
-    for (var n = 1; n <= 13; n++) {
-      var cumDistance = p.annualDistance * n;
-      var hevCumCost = cumDistance / p.hevMpg * p.gasPrice;
-      var gasCumCost = cumDistance / p.gasMpg * p.gasPrice;
-      var fuelDiff = gasCumCost - hevCumCost;
-      var priceDiffRem = p.priceDiff - fuelDiff;
-      data.push({
-        year: n, cumDistance: cumDistance,
-        hevCumCost: hevCumCost, gasCumCost: gasCumCost,
-        fuelDiff: fuelDiff, priceDiffRem: priceDiffRem
-      });
-      if (breakEvenYear === null && priceDiffRem <= 0) {
-        breakEvenYear = n;
-      }
-    }
-    var hevAnnualCost = p.annualDistance / p.hevMpg * p.gasPrice;
-    var gasAnnualCost = p.annualDistance / p.gasMpg * p.gasPrice;
-    return {
-      rows: data,
-      hevAnnualCost: hevAnnualCost,
-      gasAnnualCost: gasAnnualCost,
-      annualSaving: gasAnnualCost - hevAnnualCost,
-      breakEvenYear: breakEvenYear
-    };
+  drawArea(years.map(y => y.cumGas), '#b35c1e', 0.08);
+  drawArea(years.map(y => y.cumHev), '#1a6b8a', 0.08);
+
+  // Lines
+  function drawLine(data, color, lineW) {
+    ctx.strokeStyle = color;
+    ctx.lineWidth = lineW;
+    ctx.lineJoin = 'round';
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    data.forEach((val, i) => {
+      const x = pad.left + (i / (data.length - 1)) * cw;
+      const y = pad.top + ch - (val / niceMax) * ch;
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    });
+    ctx.stroke();
+
+    // Dots
+    data.forEach((val, i) => {
+      const x = pad.left + (i / (data.length - 1)) * cw;
+      const y = pad.top + ch - (val / niceMax) * ch;
+      ctx.fillStyle = '#fff';
+      ctx.beginPath();
+      ctx.arc(x, y, 3.5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    });
   }
 
-  function updateKPI(result) {
-    document.getElementById('kpi-hev-cost').textContent = formatNumber(result.hevAnnualCost);
-    document.getElementById('kpi-gas-cost').textContent = formatNumber(result.gasAnnualCost);
-    document.getElementById('kpi-saving').textContent = formatNumber(result.annualSaving);
-    var beEl = document.getElementById('kpi-breakeven');
-    if (result.breakEvenYear !== null) {
-      beEl.textContent = result.breakEvenYear;
-      beEl.nextElementSibling.textContent = '年目';
+  drawLine(years.map(y => y.cumGas), '#b35c1e', 2.5);
+  drawLine(years.map(y => y.cumHev), '#1a6b8a', 2.5);
+}
+
+function drawBarChart(years) {
+  const canvas = $('barChart');
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.parentElement.getBoundingClientRect();
+  const w = rect.width - 48;
+  const h = canvas.offsetHeight || 250;
+  canvas.width = w * dpr;
+  canvas.height = h * dpr;
+  canvas.style.width = w + 'px';
+  canvas.style.height = h + 'px';
+  ctx.scale(dpr, dpr);
+  ctx.clearRect(0, 0, w, h);
+
+  const pad = { top: 20, right: 16, bottom: 32, left: 65 };
+  const cw = w - pad.left - pad.right;
+  const ch = h - pad.top - pad.bottom;
+
+  const vals = years.map(y => y.remaining);
+  const absMax = Math.max(Math.abs(Math.min(...vals)), Math.abs(Math.max(...vals)));
+  const niceMax = Math.ceil(absMax / 100000) * 100000;
+  const zeroY = pad.top + (niceMax / (niceMax * 2)) * ch;
+
+  // Grid
+  ctx.strokeStyle = '#e4dfd5';
+  ctx.lineWidth = 0.5;
+  for (let i = -2; i <= 2; i++) {
+    const yPos = zeroY - (i / 2) * (ch / 2);
+    ctx.beginPath();
+    ctx.moveTo(pad.left, yPos);
+    ctx.lineTo(pad.left + cw, yPos);
+    ctx.stroke();
+    ctx.fillStyle = '#999';
+    ctx.font = '10px "Zen Kaku Gothic New"';
+    ctx.textAlign = 'right';
+    ctx.fillText(fmt(niceMax * (i / 2)), pad.left - 8, yPos + 3);
+  }
+
+  // Zero line (stronger)
+  ctx.strokeStyle = '#999';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(pad.left, zeroY);
+  ctx.lineTo(pad.left + cw, zeroY);
+  ctx.stroke();
+
+  // Bars with rounded tops
+  const barW = (cw / years.length) * 0.55;
+  const gap = cw / years.length;
+
+  years.forEach((yr, i) => {
+    const x = pad.left + gap * i + (gap - barW) / 2;
+    const val = yr.remaining;
+    const barH = (Math.abs(val) / niceMax) * (ch / 2);
+    const r = Math.min(3, barH);
+
+    if (val >= 0) {
+      ctx.fillStyle = '#1a7a4a';
+      ctx.globalAlpha = 0.7;
+      // Rounded rect top
+      ctx.beginPath();
+      ctx.moveTo(x, zeroY);
+      ctx.lineTo(x, zeroY - barH + r);
+      ctx.quadraticCurveTo(x, zeroY - barH, x + r, zeroY - barH);
+      ctx.lineTo(x + barW - r, zeroY - barH);
+      ctx.quadraticCurveTo(x + barW, zeroY - barH, x + barW, zeroY - barH + r);
+      ctx.lineTo(x + barW, zeroY);
+      ctx.closePath();
+      ctx.fill();
     } else {
-      beEl.textContent = '13年以上';
-      beEl.nextElementSibling.textContent = '';
+      ctx.fillStyle = '#b83a2a';
+      ctx.globalAlpha = 0.65;
+      ctx.beginPath();
+      ctx.moveTo(x, zeroY);
+      ctx.lineTo(x, zeroY + barH - r);
+      ctx.quadraticCurveTo(x, zeroY + barH, x + r, zeroY + barH);
+      ctx.lineTo(x + barW - r, zeroY + barH);
+      ctx.quadraticCurveTo(x + barW, zeroY + barH, x + barW, zeroY + barH - r);
+      ctx.lineTo(x + barW, zeroY);
+      ctx.closePath();
+      ctx.fill();
     }
-  }
+    ctx.globalAlpha = 1;
 
-  // 損益分岐年（プラグイン参照用）
-  var currentBreakEvenYear = null;
-
-  // Chart.js プラグイン: 損益分岐点の垂直線
-  var breakEvenLinePlugin = {
-    id: 'breakEvenLine',
-    afterDraw: function(ch) {
-      if (currentBreakEvenYear === null) return;
-      var xScale = ch.scales.x;
-      var yScale = ch.scales.y;
-      var x = xScale.getPixelForValue(currentBreakEvenYear - 1);
-      var c = ch.ctx;
-      c.save();
-      c.beginPath();
-      c.setLineDash([5, 3]);
-      c.strokeStyle = '#DC2626';
-      c.lineWidth = 1.5;
-      c.moveTo(x, yScale.top);
-      c.lineTo(x, yScale.bottom);
-      c.stroke();
-      c.fillStyle = '#DC2626';
-      c.font = 'bold 10px sans-serif';
-      c.textAlign = 'center';
-      c.fillText(currentBreakEvenYear + '年目', x, yScale.top - 4);
-      c.restore();
-    }
-  };
-
-  var chartOpts = {
-    responsive: true,
-    maintainAspectRatio: true,
-    aspectRatio: 2.2,
-    interaction: { mode: 'index', intersect: false },
-    plugins: {
-      legend: { labels: { font: { size: 10 } } },
-      tooltip: {
-        callbacks: {
-          label: function(ctx) {
-            return ctx.dataset.label + ': ' + Math.round(ctx.parsed.y).toLocaleString('ja-JP') + '円';
-          }
-        }
-      }
-    },
-    scales: {
-      x: {
-        ticks: { font: { size: 9 } },
-        title: { display: false }
-      },
-      y: {
-        ticks: {
-          font: { size: 9 },
-          callback: function(v) { return v.toLocaleString('ja-JP'); }
-        },
-        title: { display: false }
-      }
-    }
-  };
-
-  // Chart 1: 累計燃料代
-  var chart = new Chart(document.getElementById('chart'), {
-    type: 'line',
-    data: {
-      labels: [],
-      datasets: [
-        {
-          label: 'HEV',
-          data: [],
-          borderColor: '#2563EB',
-          backgroundColor: 'rgba(37,99,235,0.08)',
-          borderWidth: 2,
-          pointRadius: 3,
-          pointBackgroundColor: '#2563EB',
-          tension: 0.1
-        },
-        {
-          label: 'ガソリン車',
-          data: [],
-          borderColor: '#EA580C',
-          backgroundColor: 'rgba(234,88,12,0.08)',
-          borderWidth: 2,
-          pointRadius: 3,
-          pointBackgroundColor: '#EA580C',
-          tension: 0.1
-        }
-      ]
-    },
-    options: Object.assign({}, chartOpts, {
-      layout: { padding: { top: 14 } }
-    }),
-    plugins: [breakEvenLinePlugin]
+    // X label
+    ctx.fillStyle = '#888';
+    ctx.font = '9px "Zen Kaku Gothic New"';
+    ctx.textAlign = 'center';
+    ctx.fillText(yr.y + '年', x + barW / 2, h - 8);
   });
+}
 
-  // Chart 2: 車両代金差額残
-  var chart2 = new Chart(document.getElementById('chart2'), {
-    type: 'bar',
-    data: {
-      labels: [],
-      datasets: [{
-        label: '車両代金差額残',
-        data: [],
-        backgroundColor: [],
-        borderColor: [],
-        borderWidth: 1,
-        borderRadius: 3
-      }]
-    },
-    options: Object.assign({}, chartOpts, {
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          callbacks: {
-            label: function(ctx) {
-              return Math.round(ctx.parsed.y).toLocaleString('ja-JP') + '円';
-            }
-          }
-        }
-      }
-    })
+function drawCharts(years, breakevenYear) {
+  drawLineChart(years, breakevenYear);
+  drawBarChart(years);
+}
+
+Object.values(inputs).forEach(input => {
+  input.addEventListener('input', calculate);
+});
+
+// 入力ボックス→スライダーの双方向バインディング
+const inputBoxBindings = [
+  { box: 'gasPriceVal', slider: 'gasPrice', parse: v => parseInt(v.replace(/,/g, '')) },
+  { box: 'annualKmVal', slider: 'annualKm', parse: v => parseInt(v.replace(/,/g, '')) },
+  { box: 'hevFuelVal', slider: 'hevFuel', parse: v => parseFloat(v) },
+  { box: 'gasFuelVal', slider: 'gasFuel', parse: v => parseFloat(v) },
+  { box: 'priceDiffVal', slider: 'priceDiff', parse: v => parseInt(v.replace(/,/g, '')) },
+];
+
+inputBoxBindings.forEach(({ box, slider, parse }) => {
+  const boxEl = $(box);
+  boxEl.addEventListener('change', () => {
+    const val = parse(boxEl.value);
+    if (!isNaN(val)) {
+      const sl = $(slider);
+      const clamped = Math.max(Number(sl.min), Math.min(Number(sl.max), val));
+      sl.value = clamped;
+      calculate();
+    }
   });
+  boxEl.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      boxEl.blur();
+    }
+  });
+});
 
-  function updateChart(result) {
-    // Chart 1: 累計燃料代
-    var labels = result.rows.map(function(r) { return r.year + '年'; });
-    chart.data.labels = labels;
-    chart.data.datasets[0].data = result.rows.map(function(r) { return Math.round(r.hevCumCost); });
-    chart.data.datasets[1].data = result.rows.map(function(r) { return Math.round(r.gasCumCost); });
-    currentBreakEvenYear = result.breakEvenYear;
-    chart.update();
-
-    var remData = result.rows.map(function(r) { return Math.round(r.priceDiffRem); });
-    chart2.data.labels = labels;
-    chart2.data.datasets[0].data = remData;
-    chart2.data.datasets[0].backgroundColor = remData.map(function(v) {
-      return v > 0 ? 'rgba(220,38,38,0.25)' : 'rgba(22,163,74,0.35)';
-    });
-    chart2.data.datasets[0].borderColor = remData.map(function(v) {
-      return v > 0 ? '#DC2626' : '#16A34A';
-    });
-    chart2.update();
-  }
-
-  function updateTable(result) {
-    var tbody = document.getElementById('table-body');
-    var html = '';
-    result.rows.forEach(function(r) {
-      var cls = '';
-      if (result.breakEvenYear !== null && r.year === result.breakEvenYear) {
-        cls = 'row-breakeven';
-      } else if (r.priceDiffRem < 0) {
-        cls = 'row-positive';
-      }
-      html += '<tr class="' + cls + '">'
-        + '<td>' + r.year + '年</td>'
-        + '<td>' + formatNumber(r.cumDistance) + ' km</td>'
-        + '<td>' + formatNumber(r.hevCumCost) + ' 円</td>'
-        + '<td>' + formatNumber(r.gasCumCost) + ' 円</td>'
-        + '<td>' + formatNumber(r.fuelDiff) + ' 円</td>'
-        + '<td>' + formatNumber(r.priceDiffRem) + ' 円</td>'
-        + '</tr>';
-    });
-    tbody.innerHTML = html;
-  }
-
-  function update() {
-    var p = getParams();
-    var result = calculate(p);
-    updateKPI(result);
-    updateChart(result);
-    updateTable(result);
-  }
-
-  update();
-})();
+calculate();
+window.addEventListener('resize', calculate);
 
 // Service Worker登録（ホスティング時のみ有効、ローカルファイルでは無視）
 if ('serviceWorker' in navigator && location.protocol !== 'file:') {
   navigator.serviceWorker.register('./sw.js');
 }
 </script>
-
 </body>
 </html>
