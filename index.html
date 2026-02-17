@@ -416,99 +416,113 @@
     }
 
     body {
-      background: white;
-      font-size: 9px;
-      line-height: 1.2;
+      background: white !important;
+      font-size: 9px !important;
+      line-height: 1.15 !important;
     }
 
     .container {
-      max-width: none;
-      padding: 0;
+      max-width: none !important;
+      padding: 0 !important;
     }
 
     .print-btn { display: none !important; }
 
     /* ヘッダー */
     .header {
-      margin-bottom: 4px;
-      padding-bottom: 3px;
-      border-bottom-width: 1px;
+      margin-bottom: 3px !important;
+      padding-bottom: 2px !important;
+      border-bottom-width: 1px !important;
     }
-    .header h1 { font-size: 14px; }
-    .header .subtitle { font-size: 9px; }
+    .header h1 { font-size: 13px !important; }
+    .header .subtitle { font-size: 8px !important; }
 
-    /* 入力セクション — スライダー非表示、値だけ横並び */
+    /* 入力セクション — スライダー非表示、5項目を1行に */
     .input-section {
-      padding: 4px 10px;
-      margin-bottom: 4px;
-      box-shadow: none;
-      border-color: #ccc;
+      padding: 3px 8px !important;
+      margin-bottom: 3px !important;
+      box-shadow: none !important;
+      border-color: #ccc !important;
     }
     .input-grid {
-      grid-template-columns: 1fr 1fr 1fr 1fr;
-      gap: 2px 12px;
+      display: flex !important;
+      flex-wrap: wrap !important;
+      gap: 1px 16px !important;
+    }
+    .input-group {
+      flex: 0 0 auto !important;
+      gap: 0 !important;
     }
     .input-group[style] {
       grid-column: auto !important;
     }
-    .input-group { gap: 1px; }
-    .input-group label { font-size: 8px; margin-bottom: 0; }
-    .input-row { gap: 3px; }
+    .input-group label { font-size: 7px !important; margin-bottom: 0 !important; }
+    .input-row { gap: 2px !important; }
     .input-row input[type="range"] { display: none !important; }
     .input-row .value-input {
-      font-size: 10px;
-      padding: 1px 4px;
-      width: 65px;
-      border-color: #ccc;
+      font-size: 9px !important;
+      padding: 0px 3px !important;
+      width: 55px !important;
+      border-color: #ccc !important;
     }
-    .input-row .unit { font-size: 8px; }
+    .input-row .unit { font-size: 7px !important; }
 
-    /* サマリーカード */
-    .summary-row { gap: 4px; margin-bottom: 4px; }
+    /* サマリーカード — 必ず4列横並び */
+    .summary-row {
+      display: grid !important;
+      grid-template-columns: repeat(4, 1fr) !important;
+      gap: 4px !important;
+      margin-bottom: 3px !important;
+    }
     .summary-card {
-      padding: 3px 6px 2px;
-      border-left-width: 3px;
+      padding: 2px 5px 1px !important;
+      border-left-width: 3px !important;
     }
-    .summary-card .label { font-size: 7px; margin-bottom: 0; }
-    .summary-card .value { font-size: 16px; line-height: 1.1; }
-    .summary-card .value-unit { font-size: 8px; margin-top: 0; }
+    .summary-card .label { font-size: 6.5px !important; margin-bottom: 0 !important; }
+    .summary-card .value { font-size: 14px !important; line-height: 1.1 !important; }
+    .summary-card .value-unit { font-size: 7px !important; margin-top: 0 !important; }
 
-    /* チャート */
-    .charts-row { gap: 4px; margin-bottom: 4px; }
+    /* チャート — 必ず2列横並び */
+    .charts-row {
+      display: grid !important;
+      grid-template-columns: 1fr 1fr !important;
+      gap: 4px !important;
+      margin-bottom: 3px !important;
+    }
     .chart-card {
-      padding: 4px 6px;
-      box-shadow: none;
-      border-color: #ccc;
+      padding: 3px 5px !important;
+      box-shadow: none !important;
+      border-color: #ccc !important;
     }
     .chart-card h3 {
-      font-size: 9px;
-      margin-bottom: 2px;
-      padding-bottom: 2px;
+      font-size: 8px !important;
+      margin-bottom: 1px !important;
+      padding-bottom: 1px !important;
     }
-    .chart-legend { margin-bottom: 2px; font-size: 8px; gap: 10px; }
-    .legend-line { width: 12px; height: 2px; }
+    .chart-legend { margin-bottom: 1px !important; font-size: 7px !important; gap: 8px !important; }
+    .legend-line { width: 10px !important; height: 2px !important; }
     canvas {
-      height: 120px !important;
+      height: 105px !important;
     }
 
     /* テーブル */
     .table-section {
-      box-shadow: none;
-      border-color: #ccc;
+      box-shadow: none !important;
+      border-color: #ccc !important;
     }
     .table-section h3 {
-      font-size: 9px;
-      padding: 3px 6px 2px;
+      font-size: 8px !important;
+      padding: 2px 5px 1px !important;
     }
-    table { font-size: 8px; }
+    table { font-size: 7.5px !important; }
     thead th {
-      font-size: 7.5px;
-      padding: 2px 5px;
-      border-bottom-width: 1px;
+      font-size: 7px !important;
+      padding: 1.5px 4px !important;
+      border-bottom-width: 1px !important;
     }
     tbody td {
-      padding: 1.5px 5px;
-      border-bottom-width: 0.5px;
+      padding: 1px 4px !important;
+      border-bottom-width: 0.5px !important;
     }
     tbody tr.breakeven-row {
       background: var(--warn-bg) !important;
@@ -516,9 +530,9 @@
 
     /* 注釈 */
     .footnote {
-      margin-top: 3px;
-      font-size: 7px;
-      line-height: 1.3;
+      margin-top: 2px !important;
+      font-size: 6.5px !important;
+      line-height: 1.2 !important;
     }
   }
 
@@ -989,6 +1003,14 @@ inputBoxBindings.forEach(({ box, slider, parse }) => {
 
 calculate();
 window.addEventListener('resize', calculate);
+
+// 印刷時にチャートを再描画（CSSで高さが変わるため）
+window.addEventListener('beforeprint', () => {
+  setTimeout(calculate, 50);
+});
+window.addEventListener('afterprint', () => {
+  setTimeout(calculate, 50);
+});
 
 // Service Worker登録（ホスティング時のみ有効、ローカルファイルでは無視）
 if ('serviceWorker' in navigator && location.protocol !== 'file:') {
