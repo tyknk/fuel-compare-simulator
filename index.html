@@ -537,11 +537,107 @@
   }
 
   @media (max-width: 768px) {
-    .container { padding: 20px 16px; }
-    .input-grid { grid-template-columns: 1fr; gap: 16px; }
-    .summary-row { grid-template-columns: 1fr 1fr; }
-    .charts-row { grid-template-columns: 1fr; }
+    .container {
+      padding: 20px 12px 40px;
+    }
+
+    /* ヘッダー */
+    .header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+    }
+    .header h1 { font-size: 20px; }
+    .header .subtitle {
+      margin-left: 0;
+      font-size: 11px;
+    }
+    .print-btn { display: none; }
+
+    /* 入力セクション */
+    .input-section {
+      padding: 16px 14px;
+      margin-bottom: 16px;
+    }
+    .input-grid {
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+    .input-group label { font-size: 11px; }
+    .input-row { gap: 10px; }
+    .input-row input[type="range"] {
+      height: 8px;
+    }
+    .input-row input[type="range"]::-webkit-slider-thumb {
+      width: 26px;
+      height: 26px;
+    }
+    .input-row input[type="range"]::-moz-range-thumb {
+      width: 26px;
+      height: 26px;
+    }
+    .input-row .value-input {
+      font-size: 15px;
+      width: 85px;
+      padding: 6px 8px;
+    }
+    .input-row .unit { font-size: 12px; }
+
+    /* サマリーカード */
+    .summary-row {
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .summary-card {
+      padding: 12px 12px 10px;
+    }
+    .summary-card .label { font-size: 10px; }
     .summary-card .value { font-size: 26px; }
+    .summary-card .value-unit { font-size: 11px; }
+
+    /* チャート */
+    .charts-row {
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .chart-card {
+      padding: 16px 14px;
+    }
+    canvas {
+      height: 200px !important;
+    }
+
+    /* テーブル — 横スクロール対応 */
+    .table-section {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .table-section h3 {
+      padding: 14px 14px 10px;
+    }
+    table {
+      font-size: 11px;
+      min-width: 540px;
+    }
+    thead th {
+      padding: 8px 10px;
+      font-size: 10px;
+      white-space: nowrap;
+    }
+    tbody td {
+      padding: 7px 10px;
+      white-space: nowrap;
+    }
+
+    /* 注釈 */
+    .footnote {
+      margin-top: 16px;
+      font-size: 10px;
+    }
   }
 </style>
 </head>
